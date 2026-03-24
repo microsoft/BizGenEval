@@ -1,35 +1,6 @@
 import re
 import ast
 import json
-import yaml
-
-
-def config_apis(config_path: str):
-    """configure api keys for different task types."""
-
-    def get_openai_request_url(model_name: str):
-        pass
-
-    config = yaml.safe_load(open(config_path, "r"))
-
-    api_keys = {}
-    for task_type, config_info in config["models"].items():
-        api_model, max_workers = config_info[:2]
-        if len(config_info) > 2:
-            reasoning_effort = config_info[2]
-        else:
-            reasoning_effort = "medium" if api_model in ["5.1", "gpt5"] else None
-        
-        url, api_key = get_openai_request_url(api_model)
-        api_keys[task_type] = {
-            "url": url,
-            "api_key": api_key,
-            "max_workers": max_workers,
-            "reasoning_effort": reasoning_effort,
-        }
-        api_keys[task_type].update(**config["config"])
-    return api_keys
-
 
 
 def parse_json_safe(text):
@@ -76,7 +47,3 @@ def parse_json_safe(text):
     s4 = re.sub(r"\btrue\b", "True", s4, flags=re.IGNORECASE)
     s4 = re.sub(r"\bfalse\b", "False", s4, flags=re.IGNORECASE)
     return ast.literal_eval(s4)
-
-
-def request_i2t_until_success(**kwargs):
-    pass

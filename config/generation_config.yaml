@@ -1,0 +1,13 @@
+qwen_image:
+  model: "Qwen/Qwen-Image"
+  num_inference_steps: 50
+  true_cfg_scale: 4.0
+  seed: 42
+
+zimage_turbo:
+  model: "Tongyi-MAI/Z-Image-Turbo"
+  height: 1024
+  width: 1024
+  num_inference_steps: 9
+  guidance_scale: 0.0
+  seed: 42

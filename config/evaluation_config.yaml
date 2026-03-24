@@ -1,0 +1,12 @@
+# Gemini API configuration for image evaluation
+#
+# Provider options:
+#   "google" (default) - uses google-genai SDK, set GEMINI_API_KEY or GOOGLE_API_KEY
+#
+provider: "google"
+# api_key: ""  # optional; otherwise use GEMINI_API_KEY / GOOGLE_API_KEY
+
+model: "gemini-3-flash-preview"
+max_workers: 64
+max_retries: 5
+sleep_time: 5
