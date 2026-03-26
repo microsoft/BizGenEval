@@ -3,7 +3,11 @@
 BizGenEval is a benchmark for evaluating image generation models on real-world commercial design tasks. It covers **5 document types** (slides, charts, webpages, posters, scientific figures) × **4 capability dimensions** (text rendering, layout control, attribute binding, knowledge reasoning) = **20 evaluation tasks**, with 400 curated prompts and 8,000 checklist questions.
 
 
-![](assets/three_plots_in_one_row.png)
+![](docs/images/three_plots_in_one_row.png)
+
+## Main Results
+
+![](docs/images/overall_hard_easy_ranking.png)
 
 ## Installation
 
@@ -32,7 +36,7 @@ Each entry in `assets/bizgeneval.jsonl` follows this schema:
 }
 ```
 
-- `easy_qidxs` / `hard_qidxs`: 1-based indices into `questions`, indicating difficulty split.
+- `easy_qidxs` / `hard_qidxs`: difficulty split for the questions.
 
 ## Image Generation
 
@@ -45,6 +49,10 @@ python -m generation.image_generation \
     --resolution_mode dynamic_original \
     --skip_existing
 ```
+
+The `--resolution_mode` controls how output image dimensions are determined: `config` uses the fixed size from your YAML, `dynamic_original` matches the dataset's reference resolution (snapped to the model's stride), and `dynamic_max_pixels` scales it down to fit a pixel budget.
+
+You can integrate your own models by extending `generation/models.py`, i.e., add a loading branch in `load_model()` and a corresponding generation method, then register it in `generate_image()`.
 
 ## Evaluation
 

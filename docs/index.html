@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BizGenEval — Commercial Visual Content Generation Benchmark</title>
+<link rel="icon" type="image/png" sizes="634x602" href="images/bizgeneval_logo_transparent_trimmed.png?v=4"/>
+<link rel="shortcut icon" href="images/bizgeneval_logo_transparent_trimmed.png?v=4"/>
+<link rel="apple-touch-icon" href="images/bizgeneval_logo_transparent_trimmed.png?v=4"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+/* ── Tokens ─────────────────────────────────────── */
+:root {
+  --g950:#0d2744; --g900:#143f73; --g800:#184f87; --g700:#1a6fa0;
+  --g600:#1a8fb3; --g500:#2ba8c8; --g400:#42cbb9; --g300:#7addd4;
+  --g200:#b0eee8; --g100:#d6f5f3; --g50:#edfaf9;
+  --n950:#030712; --n900:#111827; --n800:#1f2937; --n700:#374151;
+  --n600:#4b5563; --n500:#6b7280; --n400:#9ca3af; --n300:#d1d5db;
+  --n200:#e5e7eb; --n100:#f3f4f6; --n50:#f9fafb;
+  --bg:#ffffff; --bg2:#f9fafb; --border:var(--n200); --border-g:var(--g200);
+  --text:var(--n900); --muted:var(--n500);
+  --r:8px; --r2:14px; --r3:20px;
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh:0 4px 16px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.04);
+  --sh-lg:0 12px 40px rgba(13,39,68,.10),0 4px 12px rgba(13,39,68,.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── Nav ─────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border)}
+.nav-in{max-width:1120px;width:100%;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:58px}
+.nav-brand{display:inline-flex;align-items:center;gap:0;font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;color:var(--g950);text-decoration:none}
+.nav-brand img{width:60px;height:50px;object-fit:contain;flex-shrink:0;margin-right:-10px}
+.nav-brand span{
+  display:inline-block;
+  font-style:normal;
+  background:linear-gradient(90deg,#143f73 0%,#184f87 34%,#1a8fb3 68%,#42cbb9 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+}
+.nav-links{display:flex;gap:2px}
+.nav-links a{padding:6px 13px;border-radius:7px;font-size:.8rem;font-weight:500;color:var(--n600);text-decoration:none;transition:color .15s,background .15s}
+.nav-links a:hover{color:var(--g950);background:var(--g50)}
+
+/* ── Hero ────────────────────────────────────────── */
+.hero{padding:78px 32px 24px;background:#fff}
+.hero-inner{max-width:980px;width:100%;margin:0 auto;text-align:center}
+.hero-left{display:flex;flex-direction:column;align-items:center}
+h1.hero-title{max-width:980px;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px;text-align:center}
+.hero-name{display:block;font-family:'DM Serif Display',serif;font-size:clamp(3.5rem,6.2vw,5.9rem);font-weight:400;line-height:1.02;letter-spacing:-2.4px}
+.hero-name em{font-style:normal;background:linear-gradient(90deg,#143f73 0%,#184f87 34%,#1a8fb3 68%,#42cbb9 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.hero-subtitle{display:block;max-width:920px;font-family:'Inter',system-ui,sans-serif;font-size:clamp(1.85rem,3.35vw,2.9rem);font-weight:700;line-height:1.12;letter-spacing:-1.1px;color:var(--g900);text-wrap:balance}
+.authors{display:flex;flex-direction:column;align-items:center;gap:4px;max-width:1200px;margin:0 auto 28px}
+.authors-row{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px}
+.authors a,.authors span{font-size:.92rem;color:var(--n500);text-decoration:none;transition:color .15s}
+.authors a:hover{color:var(--g700)}
+.authors .sep{color:var(--n300)}
+.author-mark{font-size:.7em;vertical-align:super;line-height:0;margin-left:1px}
+.author-note{max-width:920px;margin-top:6px;text-align:center;font-size:.76rem;line-height:1.7;color:var(--n400)}
+.author-note a{color:var(--g700);text-decoration:none}
+.author-note a:hover{color:var(--g800);text-decoration:underline}
+
+.btn-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--r);font-size:.88rem;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Inter',sans-serif}
+.btn-green{background:var(--g950);color:#fff;box-shadow:0 1px 3px rgba(13,39,68,.2)}
+.btn-green:hover{background:var(--g800);box-shadow:0 6px 24px rgba(13,39,68,.25);transform:translateY(-1px)}
+.btn-outline{background:#fff;color:var(--n700);border:1px solid var(--n200);box-shadow:var(--sh-sm)}
+.btn-outline:hover{border-color:var(--g300);color:var(--g800);background:var(--g50);transform:translateY(-1px)}
+
+/* ── Stats Bar ───────────────────────────────────── */
+.stats-bar{background:#fff}
+.stats-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:0 32px}
+.stat{padding:28px 16px;text-align:center}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'DM Serif Display',serif;font-style:italic;font-size:2.4rem;line-height:1;color:var(--g400);margin-bottom:4px}
+.stat-l{font-size:.73rem;color:#198bb0;font-weight:700;letter-spacing:.03em}
+
+/* ── Shared ──────────────────────────────────────── */
+.section{padding:30px 32px}
+.wrap{max-width:1120px;margin:0 auto}
+.eyebrow{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--g600);margin-bottom:12px}
+.sec-title{font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(1.9rem,4vw,2.8rem);font-weight:700;line-height:1.15;letter-spacing:-.4px;color:var(--g950);margin-bottom:12px}
+.sec-body{font-size:.96rem;color:var(--muted);max-width:620px;line-height:1.8}
+.divider{height:1px;background:var(--border);max-width:1120px;margin:0 auto}
+
+/* ── Framework ───────────────────────────────────── */
+#framework{background:#fff}
+
+/* ── Figure display (shared) ─────────────────────── */
+.fig-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh)}
+.fig-wrap img{width:100%;height:auto;display:block}
+.fig-caption{padding:14px 22px;background:var(--bg2);border-top:1px solid var(--border);font-size:.79rem;color:var(--muted);line-height:1.6}
+.fig-caption strong{color:var(--n700)}
+
+/* ── Pipeline section ────────────────────────────── */
+#pipeline{background:var(--bg2)}
+
+/* ── Leaderboard ─────────────────────────────────── */
+#leaderboard{background:var(--bg2)}
+.lb-controls{margin-top:44px}
+.lb-group-label{font-size:.67rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--n400);margin-bottom:8px}
+.lb-pills{display:flex;flex-wrap:wrap;gap:4px;width:100%;padding:4px;background:var(--bg2);border:1px solid var(--border);border-radius:999px;margin-bottom:10px}
+.lb-pill{flex:1 1 0;min-width:0;padding:7px 14px;border-radius:999px;border:none;background:transparent;color:var(--muted);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .17s;font-family:'Inter',sans-serif;text-align:center}
+.lb-pill:hover{color:var(--n700)}
+.lb-pill.on-domain,.lb-pill.on-cap{background:var(--g950);color:#fff;font-weight:600;box-shadow:0 1px 6px rgba(13,39,68,.2)}
+.lb-sep{height:1px;background:var(--border);margin:14px 0}
+.lb-legend{display:flex;flex-wrap:wrap;gap:16px;margin:16px 0 20px;font-size:.73rem;color:var(--muted)}
+.ll-item{display:flex;align-items:center;gap:7px}
+.ll-sw{width:20px;height:7px;border-radius:2px}
+.sw-hard{background:#F4A8A8}.sw-easy{background:#f9d4d4;opacity:.7}
+.lb-viewer{background:#fff;border:1px solid var(--border);border-radius:var(--r3);overflow:hidden;box-shadow:var(--sh)}
+.lb-panel{display:none;animation:fadeUp .3s ease}
+.lb-panel.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lb-footer{padding:14px 24px;background:var(--bg2);border-top:1px solid var(--border);font-size:.78rem;color:var(--muted)}
+.lb-footer strong{color:var(--n700)}
+
+/* Chart leaderboard */
+.lbc-wrap{padding:20px 24px 8px}
+.lbc-header{display:grid;grid-template-columns:28px 36px 160px 1fr 72px 72px;align-items:center;gap:8px;padding:0 0 8px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.lbc-header span{font-size:.63rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--n400)}
+.lbc-header .h-bars{padding-left:4px}
+.lbc-row{display:grid;grid-template-columns:28px 36px 160px 1fr 72px 72px;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--n100);transition:background .15s;border-radius:6px;margin:0 -6px;padding-left:6px;padding-right:6px}
+.lbc-row:last-child{border-bottom:none}
+.lbc-row:hover{background:var(--g50)}
+.lbc-rank{font-size:.72rem;font-weight:700;color:var(--n400);text-align:center;min-width:28px}
+.lbc-rank.r1{color:#f59e0b}.lbc-rank.r2{color:#94a3b8}.lbc-rank.r3{color:#cd7c2f}
+.lbc-logo{width:32px;height:32px;border-radius:7px;object-fit:contain;background:var(--n50);border:1px solid var(--border);padding:2px;flex-shrink:0}
+.lbc-logo-ph{width:32px;height:32px;border-radius:7px;background:var(--n100);border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--n400)}
+.lbc-name{font-size:.8rem;font-weight:600;color:var(--n800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbc-bars{display:flex;align-items:center}
+.lbc-bar-track{position:relative;flex:1;height:12px;background:#f1f5f9;border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.06)}
+.lbc-bar-fill{position:absolute;top:0;left:0;height:100%;border-radius:99px;transform-origin:left;transform:scaleX(0);transition:transform .7s cubic-bezier(.22,1,.36,1)}
+.lbc-bar-fill.easy-fill{z-index:1}
+.lbc-bar-fill.hard-fill{z-index:2}
+.lbc-score{font-size:.74rem;font-weight:700;text-align:right;font-variant-numeric:tabular-nums;min-width:44px;letter-spacing:-.2px}
+.lbc-score.hard-score{color:#374151}
+.lbc-score.easy-score{color:#6b7280}
+@media(max-width:700px){
+  .lbc-header,.lbc-row{grid-template-columns:24px 32px 110px 1fr 56px 56px;gap:5px}
+  .lbc-name{font-size:.72rem}
+}
+
+/* ── Qualitative ─────────────────────────────────── */
+#qualitative{background:#fff}
+.qual-tabs{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--bg2);border:1px solid var(--border);border-radius:999px;margin:32px 0 24px}
+.qual-btn{padding:7px 18px;border-radius:999px;border:none;background:transparent;font-size:.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .17s;font-family:'Inter',sans-serif}
+.qual-btn:hover{color:var(--n700)}
+.qual-btn.on{background:var(--g950);color:#fff;font-weight:600;box-shadow:0 1px 6px rgba(13,39,68,.2)}
+.qual-panel{display:none;animation:fadeUp .28s ease}
+.qual-panel.on{display:block}
+
+/* ── Examples ────────────────────────────────────── */
+#examples{background:#fff}
+.ex-top{margin-top:56px}
+.ex-preview{margin-bottom:20px;background:#fff;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh)}
+.ex-preview img{width:100%;height:auto;display:block}
+.ex-title{font-family:'DM Serif Display',serif;font-size:1.8rem;font-weight:400;line-height:1.1;color:var(--g950);margin:0 0 18px;text-align:left}
+.ex-tabs{display:flex;flex-wrap:wrap;gap:4px;width:100%;padding:4px;background:var(--bg2);border:1px solid var(--border);border-radius:999px;margin:0 0 24px}
+.ex-btn{flex:1 1 0;padding:7px 18px;border-radius:999px;border:none;background:transparent;font-size:.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .17s;font-family:'Inter',sans-serif;text-align:center}
+.ex-btn:hover{color:var(--n700)}
+.ex-btn.on{background:var(--g950);color:#fff;font-weight:600;box-shadow:0 1px 6px rgba(13,39,68,.2)}
+.ex-group{display:none;animation:fadeUp .28s ease}
+.ex-group.on{display:block}
+.ex-subtabs{display:flex;flex-wrap:wrap;gap:4px;width:100%;padding:4px;background:var(--bg2);border:1px solid var(--border);border-radius:999px;margin:0 0 24px}
+.ex-subbtn{flex:1 1 0;padding:7px 14px;border-radius:999px;border:none;background:transparent;font-size:.78rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .17s;font-family:'Inter',sans-serif;text-align:center}
+.ex-subbtn:hover{color:var(--n700)}
+.ex-subbtn.on{background:var(--g950);color:#fff;font-weight:600;box-shadow:0 1px 6px rgba(13,39,68,.2)}
+.ex-panel{display:none;animation:fadeUp .28s ease}
+.ex-panel.on{display:block}
+.ex-viewer{background:#fff;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh)}
+.ex-viewer img{width:100%;height:auto;display:block}
+.ex-fb{padding:64px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+.ex-fb-icon{width:60px;height:60px;border-radius:14px;background:var(--g50);border:1px solid var(--g100);display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.ex-fb h3{font-size:.95rem;font-weight:700;color:var(--n800)}
+.ex-fb p{font-size:.83rem;color:var(--muted);max-width:500px;line-height:1.75}
+
+/* ── Citation ────────────────────────────────────── */
+#citation{background:#fff}
+.bib-card{margin-top:32px;background:var(--n950);border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh);width:100%;max-width:none}
+.bib-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.06)}
+.bib-dots{display:flex;gap:6px}
+.bib-dots i{width:11px;height:11px;border-radius:50%;display:block}
+.bib-dots i:nth-child(1){background:#ff5f57}
+.bib-dots i:nth-child(2){background:#febc2e}
+.bib-dots i:nth-child(3){background:#28c840}
+.copy-btn{padding:4px 12px;border-radius:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.copy-btn:hover{background:rgba(255,255,255,.14);color:rgba(255,255,255,.8)}
+.bib-pre{padding:26px 28px;font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace;font-size:.77rem;line-height:1.9;color:#6b7280;overflow-x:auto;white-space:pre}
+.bib-pre .kw{color:#a78bfa}.bib-pre .key{color:#7dd3fc}.bib-pre .val{color:#86efac}
+
+/* ── Footer ──────────────────────────────────────── */
+footer{background:var(--g950);padding:36px 32px;text-align:center}
+footer p{font-size:.78rem;color:rgba(255,255,255,.3)}
+footer p+p{margin-top:4px}
+footer a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .15s}
+footer a:hover{color:rgba(255,255,255,.7)}
+
+/* ── Scroll Reveal ───────────────────────────────── */
+.sr{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.sr.vis{opacity:1;transform:none}
+.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
+
+@media(max-width:640px){
+  .nav-links{display:none}
+  .hero{padding:64px 20px 18px}
+  h1.hero-title{gap:8px}
+  .hero-name{font-size:2.95rem;letter-spacing:-1.3px}
+  .hero-subtitle{font-size:1.5rem;letter-spacing:-.6px}
+  .authors{gap:4px;margin-bottom:22px}
+  .authors-row{gap:4px 10px}
+  .btn-row{gap:10px}
+  .btn{padding:11px 18px}
+  .section{padding:72px 20px}
+  .stats-inner{grid-template-columns:repeat(3,1fr)}
+  .stat:nth-child(3){border-right:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-in">
+    <a class="nav-brand" href="#">
+      <img src="images/bizgeneval_logo_transparent.png" alt="BizGenEval logo"/>
+      <span>BizGenEval</span>
+    </a>
+    <div class="nav-links">
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#qualitative">Results</a>
+      <a href="#framework">Summary</a>
+      <a href="#citation">Cite</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <h1 class="hero-title">
+        <span class="hero-name"><em>BizGenEval</em></span>
+        <span class="hero-subtitle">A Systematic Benchmark for Commercial Visual Content Generation</span>
+      </h1>
+      <div class="authors">
+        <div class="authors-row">
+          <span>Yan Li<sup class="author-mark">*</sup></span><span class="sep">·</span>
+          <span>Zezi Zeng<sup class="author-mark">*</sup></span><span class="sep">·</span>
+          <span>Ziwei Zhou<sup class="author-mark">*</sup></span><span class="sep">·</span>
+          <span>Xin Gao<sup class="author-mark">*</sup></span><span class="sep">·</span>
+          <span>Muzhao Tian<sup class="author-mark">*</sup></span><span class="sep">·</span>
+          <span>Yifan Yang<sup class="author-mark">†</sup></span><span class="sep">·</span>
+          <span>Mingxi Cheng</span><span class="sep">·</span>
+          <span>Qi Dai</span>
+        </div>
+        <div class="authors-row">
+          <span>Yuqing Yang</span><span class="sep">·</span>
+          <span>Lili Qiu</span><span class="sep">·</span>
+          <span>Zhendong Wang</span><span class="sep">·</span>
+          <span>Zhengyuan Yang</span><span class="sep">·</span>
+          <span>Xue Yang<sup class="author-mark">†</sup></span><span class="sep">·</span>
+          <span>Lijuan Wang</span><span class="sep">·</span>
+          <span>Ji Li</span><span class="sep">·</span>
+          <span>Chong Luo</span>
+        </div>
+        <div class="author-note">
+          <span><sup class="author-mark">*</sup> Equal contribution. This work was done during their internship at Microsoft.</span>
+          <span class="sep">·</span>
+          <span><sup class="author-mark">†</sup> Corresponding authors: <a href="mailto:yifanyang@microsoft.com">Yifan Yang</a>, <a href="mailto:yangxue-2019-sjtu@sjtu.edu.cn">Xue Yang</a>.</span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-green" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Paper
+        </a>
+        <a class="btn btn-outline" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          Code
+        </a>
+        <a class="btn btn-outline" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          Dataset
+        </a>
+        <a class="btn btn-outline" href="#leaderboard">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>
+          Leaderboard
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar sr">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Content Domains</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Capability Dimensions</div></div>
+    <div class="stat"><div class="stat-n">400</div><div class="stat-l">Curated Samples</div></div>
+    <div class="stat"><div class="stat-n">8K</div><div class="stat-l">Verified Questions</div></div>
+    <div class="stat"><div class="stat-n">26</div><div class="stat-l">Evaluated Models</div></div>
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<section class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="sr">
+      <span class="eyebrow">Results</span>
+      <h2 class="sec-title">Leaderboard</h2>
+      <p class="sec-body">Performance rankings across the overall average, five content domains, and four capability dimensions. Each chart shows Hard (upper) and Easy (lower) scores per model.</p>
+    </div>
+
+    <div class="lb-controls sr d1">
+      <p class="lb-group-label">By Content Domain</p>
+      <div class="lb-pills" id="g-domain">
+        <button class="lb-pill on-domain" data-p="lb-overall">🏆 Overall</button>
+        <button class="lb-pill" data-p="lb-webpage">🌐 Webpage</button>
+        <button class="lb-pill" data-p="lb-slides">📑 Slides</button>
+        <button class="lb-pill" data-p="lb-chart">📊 Chart</button>
+        <button class="lb-pill" data-p="lb-poster">🪧 Poster</button>
+        <button class="lb-pill" data-p="lb-sci">🔬 Scientific Figure</button>
+      </div>
+      <div class="lb-sep"></div>
+      <p class="lb-group-label">By Capability Dimension</p>
+      <div class="lb-pills" id="g-cap">
+        <button class="lb-pill" data-p="lb-layout" data-cap>📐 Layout Control</button>
+        <button class="lb-pill" data-p="lb-attribute" data-cap>🎨 Attribute Binding</button>
+        <button class="lb-pill" data-p="lb-text" data-cap>✍️ Text Rendering</button>
+        <button class="lb-pill" data-p="lb-knowledge" data-cap>🧠 Knowledge Reasoning</button>
+      </div>
+      <div class="lb-legend">
+        <div class="ll-item"><div class="ll-sw" style="background:#F4A8A8"></div>Hard subset (deeper)</div>
+        <div class="ll-item"><div class="ll-sw" style="background:#fad9d9"></div>Easy subset (lighter tint)</div>
+      </div>
+    </div>
+
+    <div class="lb-viewer sr d2" id="lb-viewer-root">
+      <!-- panels injected by JS -->
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PIPELINE -->
+<section class="section" id="pipeline">
+  <div class="wrap">
+    <div class="sr">
+      <span class="eyebrow">Methodology</span>
+      <h2 class="sec-title">Construction &amp; Evaluation Pipeline</h2>
+      <p class="sec-body">We introduce BizGenEval, a systematic benchmark for commercial visual content generation. The benchmark spans five representative document types—slides, charts, webpages, posters, and scientific figures—and evaluates four key capability dimensions: text rendering, layout control, attribute binding, and knowledge-based reasoning, forming 20 diverse evaluation tasks. BizGenEval contains 400 carefully curated prompts and 8,000 human-verified checklist questions to rigorously assess whether generated images satisfy complex visual and semantic constraints.</p>
+    </div>
+    <div class="fig-wrap sr d1" style="margin-top:40px">
+      <img src="images/pipeline.png" alt="Overview of the construction and evaluation pipeline"/>
+      <div class="fig-caption">
+        <strong>Figure:</strong> Overview of the construction and evaluation pipeline. The system converts real-world references and domain knowledge into structured prompts, and evaluates generated images using rigorous checklists.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- QUALITATIVE RESULTS -->
+<section class="section" id="qualitative">
+  <div class="wrap">
+    <div class="sr">
+      <span class="eyebrow">Qualitative Analysis</span>
+      <h2 class="sec-title">Qualitative Result</h2>
+      <p class="sec-body">Side-by-side qualitative comparisons reveal where current models succeed and fail. Correct regions are highlighted in blue, incorrect regions in red.</p>
+    </div>
+
+    <div class="sr d1">
+      <div class="qual-tabs">
+        <button class="qual-btn on" data-qp="q-domain">Across Content Domains</button>
+        <button class="qual-btn" data-qp="q-cap">Across Capability Dimensions</button>
+      </div>
+
+      <div id="q-domain" class="qual-panel on">
+        <div class="fig-wrap">
+          <img src="images/results_per_applications.png" alt="Qualitative results per domain"/>
+          <div class="fig-caption">
+            <strong>Figure:</strong> Qualitative evaluation across five content domains. Columns represent domains; rows show model outputs. Correct and incorrect regions are highlighted in blue and red boxes respectively.
+          </div>
+        </div>
+      </div>
+      <div id="q-cap" class="qual-panel">
+        <div class="fig-wrap">
+          <img src="images/results_per_tasks.png" alt="Qualitative results per capability"/>
+          <div class="fig-caption">
+            <strong>Figure:</strong> Qualitative evaluation across four capability dimensions: Layout Control, Attribute Binding, Text Rendering, and Knowledge-based Reasoning.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FRAMEWORK -->
+<section class="section" id="framework">
+  <div class="wrap">
+    <div class="sr">
+      <span class="eyebrow">Benchmark Design</span>
+      <h2 class="sec-title">Summary</h2>
+    </div>
+
+    <div class="sr d1 ex-top">
+      <div class="ex-preview">
+        <img src="images/three_plots_in_one_row.png" alt="BizGenEval example overview" loading="lazy"/>
+      </div>
+      <h3 class="ex-title">Examples</h3>
+      <div class="ex-tabs">
+        <button class="ex-btn on" data-eg="ex-domain-group">Across Content Domains</button>
+        <button class="ex-btn" data-eg="ex-cap-group">Across Capability Dimensions</button>
+      </div>
+      <div class="ex-group on" id="ex-domain-group">
+        <div class="ex-subtabs">
+          <button class="ex-subbtn on" data-ep="ex-web">🌐 Webpage</button>
+          <button class="ex-subbtn" data-ep="ex-sci">🧪 Scientific Figure</button>
+          <button class="ex-subbtn" data-ep="ex-slides">🖥️ Slides</button>
+          <button class="ex-subbtn" data-ep="ex-chart">📊 Chart</button>
+          <button class="ex-subbtn" data-ep="ex-poster">🪧 Poster</button>
+        </div>
+        <div class="ex-viewer">
+          <div class="ex-panel on" id="ex-web">
+            <img src="images/supp/Webpage.pdf.png" alt="Webpage example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">🌐</div><h3>Webpage</h3><p>Generate a complete webpage-style visual with clear section hierarchy, aligned UI blocks, and consistent styling across headers, body copy, imagery, and call-to-action regions.</p></div>
+          </div>
+          <div class="ex-panel" id="ex-sci">
+            <img src="images/supp/Scientific_figure.pdf.png" alt="Scientific figure example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">🧪</div><h3>Scientific Figure</h3><p>Compose a publication-style scientific figure with multiple coordinated panels, labeled components, and a visually consistent explanation of methods, data flow, or experimental outcomes.</p></div>
+          </div>
+          <div class="ex-panel" id="ex-slides">
+            <img src="images/supp/Slides.pdf.png" alt="Slides example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">🖥️</div><h3>Slides</h3><p>Design a presentation slide with a strong title area, balanced content regions, and tightly aligned chart, text, and annotation elements suitable for executive communication.</p></div>
+          </div>
+          <div class="ex-panel" id="ex-chart">
+            <img src="images/supp/Chart.pdf.png" alt="Chart example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">📊</div><h3>Chart</h3><p>Produce a chart-centric visual that combines accurate axes, legends, and category encoding with readable labels and an overall polished analytic presentation.</p></div>
+          </div>
+          <div class="ex-panel" id="ex-poster">
+            <img src="images/supp/Poster.pdf.png" alt="Poster example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">🪧</div><h3>Poster</h3><p>Assemble a poster-like layout with high information density, strong visual grouping, and readable typography across title, body sections, callouts, and supporting figures.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="ex-group" id="ex-cap-group">
+        <div class="ex-subtabs">
+          <button class="ex-subbtn on" data-ep="ex-know">🧠 Knowledge</button>
+          <button class="ex-subbtn" data-ep="ex-attr">🎨 Attribute</button>
+          <button class="ex-subbtn" data-ep="ex-lay">📐 Layout</button>
+          <button class="ex-subbtn" data-ep="ex-txt">✍️ Text</button>
+        </div>
+        <div class="ex-viewer">
+          <div class="ex-panel on" id="ex-know">
+            <img src="images/supp/questions_example_1.pdf.png" alt="Knowledge example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">🧠</div><h3>Knowledge-based Reasoning</h3><p>Generate a publication-style figure on Bayes' Theorem and the Base Rate Fallacy — including a probability tree, formal theorem statement, and a visualization demonstrating why most positive results are false positives.</p></div>
+          </div>
+          <div class="ex-panel" id="ex-attr">
+            <img src="images/supp/questions_example_2.pdf.png" alt="Attribute example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">🎨</div><h3>Attribute Binding</h3><p>Create a flat 2D infographic with precisely specified color-coded sections, exact icon types per tile, and correctly attributed text for each of seven content pillars.</p></div>
+          </div>
+          <div class="ex-panel" id="ex-lay">
+            <img src="images/supp/questions_example_3.pdf.png" alt="Layout example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">📐</div><h3>Layout Control</h3><p>Create a clean two-panel scientific figure with precisely placed components — backbone, encoder, decoder, prediction heads — connected with specific arrow types.</p></div>
+          </div>
+          <div class="ex-panel" id="ex-txt">
+            <img src="images/supp/questions_example_4.pdf.png" alt="Text example"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
+            <div class="ex-fb" style="display:none"><div class="ex-fb-icon">✍️</div><h3>Text Rendering</h3><p>Create an infographic with exact multi-line headings and verbatim paragraph body text placed precisely in six spatial regions.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CITATION -->
+<section class="section" id="citation">
+  <div class="wrap">
+    <div class="sr">
+      <span class="eyebrow">Citation</span>
+      <h2 class="sec-title">Cite this Work</h2>
+      <p class="sec-body">If BizGenEval is useful for your research, please consider citing our paper.</p>
+    </div>
+    <div class="bib-card sr d1">
+      <div class="bib-topbar">
+        <div class="bib-dots"><i></i><i></i><i></i></div>
+        <button class="copy-btn" id="copyBtn">Copy BibTeX</button>
+      </div>
+      <div class="bib-pre"><span class="kw">@misc</span>{<span class="key">bizgeneval2026</span>,
+  <span class="key">title</span>     = {<span class="val">BizGenEval: A Systematic Benchmark for
+               Commercial Visual Content Generation</span>},
+  <span class="key">author</span>    = {<span class="val">Yan Li and Zezi Zeng and Ziwei Zhou and Xin Gao and Muzhao Tian and Yifan Yang and Mingxi Cheng and Qi Dai and Yuqing Yang and Lili Qiu and Zhendong Wang and Zhengyuan Yang and Xue Yang and Lijuan Wang and Ji Li and Chong Luo</span>},
+  <span class="key">year</span>      = {<span class="val">2026</span>},
+}</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>BizGenEval</p>
+  <p style="margin-top:6px"><a href="#">Paper</a> &nbsp;·&nbsp; <a href="#">Code</a> &nbsp;·&nbsp; <a href="#">Dataset</a> &nbsp;·&nbsp; <a href="#citation">BibTeX</a></p>
+</footer>
+
+<script>
+/* ── Leaderboard data ───────────────────────────── */
+const LB_DATA = {
+  panels: {
+    'lb-overall': {
+      title: 'Overall', footer: 'Performance ranking — <strong>Overall</strong>. Scores come from the Average column in Table 1.',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:76.7,easy:93.7},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:68.5,easy:92.5},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:48.8,easy:79.2},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:35.9,easy:81.6},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:30.1,easy:66.2},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:21.9,easy:58.7},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:14.3,easy:60.1},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:13.2,easy:40.2},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:13.0,easy:40.1},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:11.2,easy:52.4},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:8.6,easy:27.7},
+        {name:'Z-Image',logo:'zimage.png',hard:8.2,easy:43.8},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:6.3,easy:41.0},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:4.9,easy:42.0},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:3.4,easy:32.4},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:2.8,easy:23.8},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:1.6,easy:21.1},
+        {name:'GLM-Image',logo:'glm_image.png',hard:1.4,easy:15.3},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:1.1,easy:10.7},
+        {name:'LongCat',logo:'longcat.png',hard:0.7,easy:12.0},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0.5,easy:9.4},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:0.5,easy:2.1},
+        {name:'Bagel',logo:'bagel.png',hard:0.3,easy:3.7},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0.1,easy:5.1},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0.1,easy:5.0},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:5.1},
+      ]
+    },
+    'lb-webpage': {
+      title: 'Webpage', footer: 'Performance ranking — <strong>Webpage</strong>. Models sorted by Hard subset score (descending).',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:77.5,easy:96.5},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:71.2,easy:94.5},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:47.0,easy:80.8},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:41.0,easy:86.0},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:36.2,easy:75.5},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:25.5,easy:67.0},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:21.0,easy:52.0},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:20.0,easy:48.8},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:19.2,easy:71.8},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:16.5,easy:40.0},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:12.0,easy:63.0},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:7.2,easy:48.0},
+        {name:'Z-Image',logo:'zimage.png',hard:6.2,easy:48.5},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:5.5,easy:48.8},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:4.5,easy:45.8},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:2.5,easy:27.5},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:2.0,easy:27.0},
+        {name:'GLM-Image',logo:'glm_image.png',hard:1.8,easy:27.3},
+        {name:'LongCat',logo:'longcat.png',hard:1.8,easy:22.3},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:0.5,easy:14.8},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0.2,easy:14.2},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:0.2,easy:2.2},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:8.2},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0,easy:8.5},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0,easy:11.0},
+        {name:'Bagel',logo:'bagel.png',hard:0,easy:5.0},
+      ]
+    },
+    'lb-slides': {
+      title: 'Slides', footer: 'Performance ranking — <strong>Slides</strong>. Models sorted by Hard subset score (descending).',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:82.2,easy:94.8},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:73.8,easy:95.8},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:54.5,easy:80.8},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:40.8,easy:89.2},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:33.8,easy:71.0},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:27.1,easy:56.5},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:19.3,easy:47.0},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:18.5,easy:67.8},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:18.2,easy:64.8},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:14.5,easy:44.8},
+        {name:'Z-Image',logo:'zimage.png',hard:12.2,easy:43.8},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:11.0,easy:36.2},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:10.2,easy:45.0},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:7.0,easy:36.5},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:5.5,easy:43.2},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:3.5,easy:28.5},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:1.8,easy:23.0},
+        {name:'GLM-Image',logo:'glm_image.png',hard:1.5,easy:22.8},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:1.5,easy:15.0},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0.8,easy:9.0},
+        {name:'LongCat',logo:'longcat.png',hard:0.8,easy:15.0},
+        {name:'Bagel',logo:'bagel.png',hard:0.3,easy:4.8},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:8.5},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0,easy:4.8},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0,easy:6.0},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:0,easy:0.5},
+      ]
+    },
+    'lb-chart': {
+      title: 'Chart', footer: 'Performance ranking — <strong>Chart</strong>. One of the hardest domains due to precise numerical rendering requirements.',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:73.0,easy:92.2},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:60.2,easy:89.2},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:46.0,easy:76.2},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:28.2,easy:76.5},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:18.0,easy:47.8},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:17.2,easy:48.8},
+        {name:'Z-Image',logo:'zimage.png',hard:8.8,easy:30.5},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:7.8,easy:46.0},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:5.5,easy:33.5},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:4.8,easy:20.3},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:3.2,easy:31.2},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:2.2,easy:15.8},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:2.2,easy:28.0},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:2.0,easy:18.8},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:1.5,easy:6.8},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:1.3,easy:14.7},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:1.2,easy:8.0},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:1.2,easy:3.2},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:0.8,easy:15.5},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0,easy:6.5},
+        {name:'GLM-Image',logo:'glm_image.png',hard:0,easy:0.5},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:0.8},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0,easy:0.8},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0,easy:0.2},
+        {name:'LongCat',logo:'longcat.png',hard:0,easy:2.5},
+        {name:'Bagel',logo:'bagel.png',hard:0,easy:0},
+      ]
+    },
+    'lb-poster': {
+      title: 'Poster', footer: 'Performance ranking — <strong>Poster</strong>. Models sorted by Hard subset score (descending).',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:76.5,easy:94.8},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:67.5,easy:91.2},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:50.7,easy:77.0},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:42.0,easy:83.5},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:35.5,easy:72.2},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:27.5,easy:62.5},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:20.3,easy:53.0},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:19.8,easy:53.5},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:18.8,easy:65.5},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:17.2,easy:64.8},
+        {name:'Z-Image',logo:'zimage.png',hard:12.0,easy:50.0},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:11.8,easy:39.0},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:11.5,easy:47.0},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:7.2,easy:48.2},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:5.8,easy:32.2},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:4.8,easy:40.8},
+        {name:'GLM-Image',logo:'glm_image.png',hard:3.8,easy:24.8},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:2.8,easy:26.2},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:1.8,easy:12.8},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:1.5,easy:15.8},
+        {name:'LongCat',logo:'longcat.png',hard:0.8,easy:21.3},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0.5,easy:7.8},
+        {name:'Bagel',logo:'bagel.png',hard:0.5,easy:8.5},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0.2,easy:11.8},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:8.2},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:0,easy:2.8},
+      ]
+    },
+    'lb-sci': {
+      title: 'Scientific Figure', footer: 'Performance ranking — <strong>Scientific Figure</strong>. Most open-source models score near zero on the Hard subset.',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:74.2,easy:90.0},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:69.5,easy:92.0},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:45.8,easy:81.5},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:27.8,easy:72.8},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:27.3,easy:64.8},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:12.5,easy:58.8},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:7.2,easy:49.2},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:6.5,easy:34.0},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:5.0,easy:38.5},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:2.8,easy:29.0},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:2.2,easy:15.0},
+        {name:'Z-Image',logo:'zimage.png',hard:1.8,easy:46.0},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:1.2,easy:1.5},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:0.5,easy:36.5},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:0.2,easy:37.0},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:0.2,easy:4.3},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:0,easy:23.2},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0,easy:1.8},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:0,easy:15.2},
+        {name:'GLM-Image',logo:'glm_image.png',hard:0,easy:1.5},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:0},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0,easy:0},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0,easy:0},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:0,easy:14.3},
+        {name:'LongCat',logo:'longcat.png',hard:0,easy:3.8},
+        {name:'Bagel',logo:'bagel.png',hard:0,easy:0},
+      ]
+    },
+    'lb-layout': {
+      title: 'Layout Control', footer: 'Capability ladder — <strong>Layout Control</strong>. Models sorted by Hard subset score (descending).',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:72.2,easy:91.2},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:68.4,easy:91.0},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:67.6,easy:89.0},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:51.6,easy:84.8},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:46.4,easy:80.6},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:35.4,easy:71.6},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:30.4,easy:63.4},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:29.0,easy:68.4},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:27.8,easy:65.0},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:27.6,easy:73.4},
+        {name:'Z-Image',logo:'zimage.png',hard:26.8,easy:69.2},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:22.2,easy:70.6},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:21.4,easy:60.2},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:17.2,easy:67.8},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:11.0,easy:60.6},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:10.4,easy:51.2},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:6.1,easy:36.2},
+        {name:'GLM-Image',logo:'glm_image.png',hard:5.4,easy:43.2},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:4.2,easy:26.8},
+        {name:'LongCat',logo:'longcat.png',hard:2.4,easy:35.8},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:2.2,easy:6.6},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:2.0,easy:22.8},
+        {name:'Bagel',logo:'bagel.png',hard:0.6,easy:12.8},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0.4,easy:15.8},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0.2,easy:17.8},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:16.8},
+      ]
+    },
+    'lb-attribute': {
+      title: 'Attribute Binding', footer: 'Capability ladder — <strong>Attribute Binding</strong>. Models sorted by Hard subset score (descending).',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:65.6,easy:92.2},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:57.4,easy:91.6},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:42.4,easy:77.2},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:25.8,easy:75.2},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:22.4,easy:62.8},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:16.6,easy:60.6},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:14.2,easy:52.6},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:13.8,easy:53.6},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:11.4,easy:59.2},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:6.8,easy:48.6},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:5.2,easy:39.8},
+        {name:'Z-Image',logo:'zimage.png',hard:2.6,easy:47.6},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:1.2,easy:47.8},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:1.2,easy:35.0},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:1.2,easy:49.2},
+        {name:'LongCat',logo:'longcat.png',hard:0.2,easy:11.6},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:0.2,easy:22.2},
+        {name:'GLM-Image',logo:'glm_image.png',hard:0,easy:13.4},
+        {name:'Bagel',logo:'bagel.png',hard:0,easy:1.6},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0,easy:5.6},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:2.6},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:0,easy:8.7},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:0,easy:22.9},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0,easy:2.8},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0,easy:2.8},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:0,easy:0.4},
+      ]
+    },
+    'lb-text': {
+      title: 'Text Rendering', footer: 'Capability ladder — <strong>Text Rendering</strong>. Models sorted by Hard subset score (descending).',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:86.4,easy:95.0},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:83.4,easy:94.6},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:43.4,easy:75.6},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:41.4,easy:72.4},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:40.4,easy:82.8},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:12.6,easy:52.6},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:11.4,easy:52.8},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:10.2,easy:39.6},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:8.6,easy:41.0},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:7.0,easy:33.6},
+        {name:'Z-Image',logo:'zimage.png',hard:2.8,easy:45.0},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:1.8,easy:39.2},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:1.2,easy:29.8},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:1.0,easy:43.0},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:0.6,easy:17.6},
+        {name:'GLM-Image',logo:'glm_image.png',hard:0.2,easy:4.4},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:0.2,easy:4.0},
+        {name:'LongCat',logo:'longcat.png',hard:0,easy:4.4},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:0,easy:1.4},
+        {name:'Bagel',logo:'bagel.png',hard:0,easy:0},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0,easy:8.0},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:0},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:0,easy:13.7},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0,easy:0},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0,easy:0},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:0,easy:0},
+      ]
+    },
+    'lb-knowledge': {
+      title: 'Knowledge Reasoning', footer: 'Capability ladder — <strong>Knowledge-based Reasoning</strong>. Models sorted by Hard subset score (descending).',
+      models: [
+        {name:'Nano-Banana-Pro',logo:'dmx_nano_banana_pro.png',hard:82.6,easy:96.2},
+        {name:'Nano-Banana-2.0',logo:'dmx_nano_banana_2.png',hard:64.6,easy:93.0},
+        {name:'Seedream-5.0',logo:'seedream_50.png',hard:41.8,easy:75.2},
+        {name:'GPT-Image-1.5',logo:'gpt_image_1_5.png',hard:26.0,easy:83.6},
+        {name:'Seedream-4.5',logo:'dmx_seedream_45.png',hard:21.4,easy:58.2},
+        {name:'Wan2.6-T2I',logo:'dmx_wan26_t2i.png',hard:12.2,easy:41.0},
+        {name:'GPT-Image-1.0',logo:'gpt_image_1.png',hard:7.8,easy:60.0},
+        {name:'Seedream-4.0',logo:'dmx_seedream_40.png',hard:6.8,easy:54.8},
+        {name:'Emu3.5',logo:'emu3_5.png',hard:1.2,easy:11.0},
+        {name:'Z-Image',logo:'zimage.png',hard:0.6,easy:13.2},
+        {name:'Z-Image-Turbo',logo:'zimage_turbo.png',hard:0.2,easy:4.0},
+        {name:'Flux.2-Pro',logo:'dmx_flux2_pro.png',hard:0.2,easy:11.7},
+        {name:'LongCat',logo:'longcat.png',hard:0,easy:0},
+        {name:'HunyuanImage-2.1',logo:'hunyuan_image_21.png',hard:0,easy:1.0},
+        {name:'GLM-Image',logo:'glm_image.png',hard:0,easy:0.4},
+        {name:'Bagel',logo:'bagel.png',hard:0,easy:0.2},
+        {name:'Qwen-Image-2512',logo:'qwen_image_2512.png',hard:0,easy:6.4},
+        {name:'HunyuanImage-3.0',logo:'hunyuan_image_30.png',hard:0,easy:2.0},
+        {name:'X-Omni-EN',logo:'xomni_en.png',hard:0,easy:1.4},
+        {name:'FLUX.1-schnell',logo:'flux1_schnell.png',hard:0,easy:1.2},
+        {name:'Imagen-4',logo:'dmx_imagen4.png',hard:0,easy:3.4},
+        {name:'Flux.1-dev',logo:'flux1_dev.png',hard:0,easy:1.4},
+        {name:'Qwen-Image',logo:'qwen_image.png',hard:0,easy:4.4},
+        {name:'FLUX.1-Krea-dev',logo:'flux1_krea_dev.png',hard:0,easy:0},
+        {name:'SD35-Large',logo:'sd35_large.png',hard:0,easy:1.2},
+        {name:'FLUX.2-dev',logo:'flux2_dev.png',hard:0,easy:8.2},
+      ]
+    },
+  }
+};
+
+/* ── Pastel color palette (mirrors Python PASTEL_COLORS) ── */
+const PASTEL_COLORS = [
+  '#F4A8A8','#A8D8E8','#F4CBAA','#C8E6C0','#D0D0D0',
+  '#B8CCE8','#E2C8E8','#F4E8AA','#C8E8E0','#F4D0C8',
+  '#B8E8CC','#E8C8B8','#C8C8E8','#E8E8C8','#D8C8E8',
+  '#C8E8D8','#E8D8C8','#D8E8C8','#E8C8D8','#C8D8E8',
+  '#E8CCB8','#B8D8E8','#E8B8B8','#CCE8B8','#E8B8CC',
+  '#B8CCB8',
+];
+function lightenColor(hex, factor = 0.78) {
+  const r = parseInt(hex.slice(1,3),16)/255;
+  const g = parseInt(hex.slice(3,5),16)/255;
+  const b = parseInt(hex.slice(5,7),16)/255;
+  const lr = Math.round((r + (1-r)*factor)*255);
+  const lg = Math.round((g + (1-g)*factor)*255);
+  const lb = Math.round((b + (1-b)*factor)*255);
+  return `#${lr.toString(16).padStart(2,'0')}${lg.toString(16).padStart(2,'0')}${lb.toString(16).padStart(2,'0')}`;
+}
+
+/* ── Render leaderboard panels ────────────────── */
+(function buildLeaderboard() {
+  const root = document.getElementById('lb-viewer-root');
+  const MEDALS = ['🥇','🥈','🥉'];
+
+  Object.entries(LB_DATA.panels).forEach(([panelId, panel], panelIdx) => {
+    const scoreMax = 100;
+
+    const div = document.createElement('div');
+    div.id = panelId;
+    div.className = 'lb-panel' + (panelIdx === 0 ? ' on' : '');
+
+    const rows = panel.models.map((m, i) => {
+      const rank = i + 1;
+      const rankClass = rank <= 3 ? ` r${rank}` : '';
+      const medal = rank <= 3 ? MEDALS[rank-1] : rank;
+      const hardPct = Math.min((m.hard / scoreMax * 100), 100).toFixed(1);
+      const easyPct = Math.min((m.easy / scoreMax * 100), 100).toFixed(1);
+      const logoSrc = `images/${m.logo}`;
+      const initials = m.name.split(/[-\s]/).map(w => w[0]).join('').slice(0,2).toUpperCase();
+      const hardColor = PASTEL_COLORS[i % PASTEL_COLORS.length];
+      const easyColor = lightenColor(hardColor, 0.85);
+
+      return `<div class="lbc-row">
+        <div class="lbc-rank${rankClass}">${medal}</div>
+        <img class="lbc-logo" src="${logoSrc}" alt="${m.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy">
+        <div class="lbc-logo-ph" style="display:none">${initials}</div>
+        <div class="lbc-name" title="${m.name}">${m.name}</div>
+        <div class="lbc-bars">
+          <div class="lbc-bar-track">
+            <div class="lbc-bar-fill easy-fill" data-pct="${easyPct}" style="width:${easyPct}%;background:${easyColor}"></div>
+            <div class="lbc-bar-fill hard-fill" data-pct="${hardPct}" style="width:${hardPct}%;background:${hardColor}"></div>
+          </div>
+        </div>
+        <div class="lbc-score hard-score">${m.hard.toFixed(1)}%</div>
+        <div class="lbc-score easy-score">${m.easy.toFixed(1)}%</div>
+      </div>`;
+    }).join('');
+
+    div.innerHTML = `
+      <div class="lbc-wrap">
+        <div class="lbc-header">
+          <span></span><span></span>
+          <span>Model</span>
+          <span class="h-bars">Hard / Easy Score</span>
+          <span style="text-align:right">Hard</span>
+          <span style="text-align:right">Easy</span>
+        </div>
+        ${rows}
+      </div>
+      <div class="lb-footer">${panel.footer}</div>`;
+
+    root.appendChild(div);
+  });
+
+  /* Animate bars when panel becomes visible */
+  function animateBars(panelEl) {
+    panelEl.querySelectorAll('.lbc-bar-fill').forEach(bar => {
+      bar.style.transform = 'scaleX(0)';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          bar.style.transform = 'scaleX(1)';
+        });
+      });
+    });
+  }
+
+  /* Initial animation for first panel */
+  setTimeout(() => {
+    const first = root.querySelector('.lb-panel.on');
+    if (first) animateBars(first);
+  }, 300);
+
+  /* Leaderboard pill switching */
+  document.querySelectorAll('.lb-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const isCap = pill.hasAttribute('data-cap');
+      document.querySelectorAll('.lb-pill').forEach(p => p.classList.remove('on-domain','on-cap'));
+      document.querySelectorAll('.lb-panel').forEach(p => p.classList.remove('on'));
+      pill.classList.add(isCap ? 'on-cap' : 'on-domain');
+      const target = document.getElementById(pill.dataset.p);
+      if (target) {
+        target.classList.add('on');
+        animateBars(target);
+      }
+    });
+  });
+})();
+
+/* Qualitative tabs */
+document.querySelectorAll('.qual-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.qual-btn').forEach(b => b.classList.remove('on'));
+    document.querySelectorAll('.qual-panel').forEach(p => p.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById(btn.dataset.qp).classList.add('on');
+  });
+});
+
+/* Example tabs */
+document.querySelectorAll('.ex-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ex-btn').forEach(b => b.classList.remove('on'));
+    document.querySelectorAll('.ex-group').forEach(g => g.classList.remove('on'));
+    btn.classList.add('on');
+    const group = document.getElementById(btn.dataset.eg);
+    if (group) group.classList.add('on');
+  });
+});
+
+document.querySelectorAll('.ex-subbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.closest('.ex-group');
+    if (!group) return;
+    group.querySelectorAll('.ex-subbtn').forEach(b => b.classList.remove('on'));
+    group.querySelectorAll('.ex-panel').forEach(p => p.classList.remove('on'));
+    btn.classList.add('on');
+    const panel = group.querySelector(`#${btn.dataset.ep}`);
+    if (panel) panel.classList.add('on');
+  });
+});
+
+/* Scroll reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)} });
+}, {threshold:.06});
+document.querySelectorAll('.sr').forEach(el => io.observe(el));
+
+/* Copy BibTeX */
+document.getElementById('copyBtn').addEventListener('click', function() {
+  const raw = `@misc{bizgeneval2026,
+  title     = {BizGenEval: A Systematic Benchmark for
+               Commercial Visual Content Generation},
+  author    = {Yan Li and Zezi Zeng and Ziwei Zhou and Xin Gao and Muzhao Tian and Yifan Yang and Mingxi Cheng and Qi Dai and Yuqing Yang and Lili Qiu and Zhendong Wang and Zhengyuan Yang and Xue Yang and Lijuan Wang and Ji Li and Chong Luo},
+  year      = {2026},
+}`;
+  navigator.clipboard.writeText(raw).then(() => {
+    this.textContent = 'Copied!';
+    setTimeout(() => this.textContent = 'Copy BibTeX', 2000);
+  });
+});
+</script>
+</body>
+</html>
