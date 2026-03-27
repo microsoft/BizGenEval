@@ -1,5 +1,13 @@
 # BizGenEval: A Systematic Benchmark for Commercial Visual Content Generation
 
+<p align="center">
+  <a href="https://arxiv.org/abs/2603.25732"><img src="https://img.shields.io/badge/arXiv-Paper-b31b1b.svg" alt="arXiv"></a>
+ <a href="https://aka.ms/BizGenEval"><img src='https://img.shields.io/badge/Project_Page-BizGenEval-green' alt='Project Page'></a>
+ <a href="https://huggingface.co/datasets/microsoft/BizGenEval"><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow'></a>
+</p>
+
+## Introduction
+
 BizGenEval is a benchmark for evaluating image generation models on real-world commercial design tasks. It covers **5 document types** (slides, charts, webpages, posters, scientific figures) × **4 capability dimensions** (text rendering, layout control, attribute binding, knowledge reasoning) = **20 evaluation tasks**, with 400 curated prompts and 8,000 checklist questions.
 
 
@@ -96,3 +104,19 @@ This produces:
 - `summary.json` — full summary with per-group statistics
 
 Each CSV includes rows for `easy`, `hard`, and `all` subsets.
+
+## Citation
+
+If you find this project useful, please consider citing:
+
+```
+@misc{li2026bizgeneval,
+      title={BizGenEval: A Systematic Benchmark for Commercial Visual Content Generation}, 
+      author={Yan Li and Zezi Zeng and Ziwei Zhou and Xin Gao and Muzhao Tian and Yifan Yang and Mingxi Cheng and Qi Dai and Yuqing Yang and Lili Qiu and Zhendong Wang and Zhengyuan Yang and Xue Yang and Lijuan Wang and Ji Li and Chong Luo},
+      year={2026},
+      eprint={2603.25732},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2603.25732}, 
+}
+```
