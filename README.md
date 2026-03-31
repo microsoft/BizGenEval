@@ -4,6 +4,7 @@
   <a href="https://arxiv.org/abs/2603.25732"><img src="https://img.shields.io/badge/arXiv-Paper-b31b1b.svg" alt="arXiv"></a>
  <a href="https://aka.ms/BizGenEval"><img src='https://img.shields.io/badge/Project_Page-BizGenEval-green' alt='Project Page'></a>
  <a href="https://huggingface.co/datasets/microsoft/BizGenEval"><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow'></a>
+ <a href="https://huggingface.co/spaces/microsoft/BizGenEval-Leaderboard"><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Leaderboard-blue' alt='Hugging Face Leaderboard'></a>
 </p>
 
 ## Introduction
