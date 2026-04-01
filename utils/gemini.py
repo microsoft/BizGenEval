@@ -132,12 +132,16 @@ def _request_google(client, model, img_path, user_prompt, system_prompt,
         system_instruction=system_prompt,
         temperature=0.0,
         http_options=types.HttpOptions(timeout=timeout * 1000),
+        thinking_config=types.ThinkingConfig(
+            thinking_level=types.ThinkingLevel.MINIMAL,
+        ),
     )
 
     for attempt in range(1, max_retries + 1):
         try:
             response = client.models.generate_content(
-                model=model, contents=[image_part, user_prompt], config=config,
+                model=model, contents=[user_prompt,image_part], config=config,
+                
             )
             text = response.text or ""
             if debug:
