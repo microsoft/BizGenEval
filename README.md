@@ -22,9 +22,9 @@
 
 ## Overview
 
-BizGenEval is a systematic benchmark for evaluating image generation models on real-world commercial design tasks. Unlike benchmarks centered on natural-image synthesis, it targets structured scenarios with dense text, precise layouts, multiple visual elements, and strict semantic constraints.
+**BizGenEval** is a systematic benchmark for evaluating image generation models on real-world commercial design tasks. Unlike benchmarks focused on natural-image synthesis, it targets structured scenarios characterized by dense text, precise layouts, multiple visual elements, and strict semantic constraints.
 
-It covers **5 document types** (slides, charts, webpages, posters, scientific figures) × **4 capability dimensions** (text rendering, layout control, attribute binding, knowledge reasoning) = **20 evaluation tasks**, with **400 curated prompts** and **8,000 human-verified binary checklist questions**.
+It covers **5 document types** (slides, charts, webpages, posters, scientific figures) × **4 capability dimensions** (text rendering, layout control, attribute binding, knowledge reasoning), resulting in **20 evaluation tasks**. The benchmark includes **300 curated prompts with real-world sources** and **100 complex knowledge-intensive prompts**, along with **8,000 human-verified binary checklist questions** for comprehensive evaluation.
 
 
 <p align="center">
