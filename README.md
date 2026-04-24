@@ -20,6 +20,12 @@
 
 ---
 
+## ✨ Latest Updates
+
+📆 [**2026-04-25**]: We have updated the results of **GPT-Image-2**.
+
+📆 [**2026-03-26**]: The paper, benchmark, leaderboard and evaluation code have been released!
+
 ## Overview
 
 **BizGenEval** is a systematic benchmark for evaluating image generation models on real-world commercial design tasks. Unlike benchmarks focused on natural-image synthesis, it targets structured scenarios characterized by dense text, precise layouts, multiple visual elements, and strict semantic constraints.
@@ -35,7 +41,7 @@ It covers **5 document types** (slides, charts, webpages, posters, scientific fi
 
 ## Main Results
 
-We benchmarked **26 state-of-the-art models**, including leading commercial APIs and open-source models, to understand how current systems handle structured design tasks. 
+We benchmarked **27 state-of-the-art models**, including leading commercial APIs and open-source models, to understand how current systems handle structured design tasks. 
 
 <p align="center">
   <img src="docs/images/overall_hard_easy_ranking.png" alt="Overall hard and easy ranking" width="100%">
